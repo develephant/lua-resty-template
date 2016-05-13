@@ -101,6 +101,32 @@ From templates you may access everything in `context` table, and everything in `
 <h1>{{message}}</h1> == <h1>{{context.message}}</h1>
 ```
 
+##### Short Escaping Syntax
+
+If you don't want a particular template tag to be processed you may escape the starting tag with backslash `\`:
+
+```html
+<h1>\{{message}}</h1>
+```
+
+This will output (instead of evaluating the message):
+
+```html
+<h1>{{message}}</h1>
+```
+
+If you want to add backslash char just before template tag, you need to escape that as well:
+
+```html
+<h1>\\{{message}}</h1>
+```
+
+This will output:
+
+```html
+<h1>\[message-variables-content-here]</h1>
+```
+
 ##### A Word About Complex Keys in Context Table
 
 Say you have this kind of a context table:
@@ -937,19 +963,13 @@ or (see the `{(head.html)}` is processed by lua-resty-template):
 </html>
 ```
 
-I'm also looking forward to make it even easier to mix-and-match other templates with server side lua-resty-templates.
-We could for example introduce escape syntax with prefixing the tags with `\`, so the above example would just go like
-this:
+You may also use short escaping syntax (currently implemented in development version:
 
 ```html
 ...
 <button ng-click="changeFoo()">\{{buttonText}}</button>
 ...
 ```
-
-But then we would need to possibly support ``\\{{buttonText}}`` syntax as well (aka escaping the escape) or you need to
-do ``{{ "\\" .. buttonText }}``. But I kinda like this short escaping syntax, so it might get implemented in a next
-version.
 
 ### Embedding Markdown inside the Templates
 
@@ -1117,13 +1137,22 @@ context.title = 'My Application - ' .. title
 
 `lua-resty-template` automatically caches (if caching is enabled) the resulting template functions in `template.cache` table. You can clear the cache by issuing `template.cache = {}`.
 
+### Where is `lua-resty-template` Used
+
+* [jd.com](http://www.jd.com/) – Jingdong Mall (Chinese: 京东商城; pinyin: Jīngdōng Shāngchéng), formerly 360Buy, is a Chinese electronic commerce company
+
+Please let me know if there are errors or old information in this list. 
+
 ## Alternatives
 
 You may also look at these (as alternatives, or to mix them with `lua-resty-template`):
 
+* lemplate (https://github.com/openresty/lemplate)
 * lua-resty-hoedown (https://github.com/bungle/lua-resty-hoedown)
-* lua-template (https://github.com/dannote/lua-template)
 * etlua (https://github.com/leafo/etlua)
+* lua-template (https://github.com/dannote/lua-template)
+* lua-resty-tmpl (https://github.com/lloydzhou/lua-resty-tmpl) (a fork of the [lua-template](https://github.com/dannote/lua-template))
+* htmlua (https://github.com/benglard/htmlua)
 * cgilua (http://keplerproject.github.io/cgilua/manual.html#templates)
 * orbit (http://keplerproject.github.io/orbit/pages.html)
 * turbolua mustache (http://turbolua.org/doc/web.html#mustache-templating)
@@ -1153,6 +1182,7 @@ You may also look at these (as alternatives, or to mix them with `lua-resty-temp
 * lua-haml (https://github.com/norman/lua-haml)
 * lua-template (https://github.com/tgn14/Lua-template)
 * hige (https://github.com/nrk/hige)
+* mod_pLua (https://sourceforge.net/p/modplua/wiki/Home/)
 * lapis html generation (http://leafo.net/lapis/reference.html#html-generation)
 
 `lua-resty-template` *was originally forked from Tor Hveem's* `tirtemplate.lua` *that he had extracted from Zed Shaw's Tir web framework (http://tir.mongrel2.org/). Thank you Tor, and Zed for your earlier contributions.*
@@ -1280,7 +1310,7 @@ The changes of every release of this module is recorded in [CHANGES](https://git
 `lua-resty-template` uses three clause BSD license (because it was originally forked from one that uses it).
 
 ```
-Copyright (c) 2014, 2015, Aapo Talvensaari
+Copyright (c) 2016, Aapo Talvensaari
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
